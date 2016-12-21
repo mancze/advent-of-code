@@ -1,0 +1,14 @@
+{
+	"name": "mancze/advent-of-code-2016",
+	"description": "Advent of Code 2016 Solution",
+	"authors": [
+		{
+			"name": "Michal Novák",
+			"homepage": "http://www.weborama.cz"
+		}
+	],
+	
+	"require": {
+		"nette/nette": "^2.4"
+	}
+}
