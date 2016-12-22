@@ -17,19 +17,20 @@ $loader->register();
 
 
 // process
-$command = $argv[1];
+array_shift($argv);
+$command = array_shift($argv);
 $matches = Strings::match($command, '~(\d+)[^\d]*(\d+)~');
 
 if ( ! $matches) {
 	throw new Exception("Unexpected command {$command}");
 }
 
-$solverName = "AdventOfCode2016\\Day{$matches[1]}Task{$matches[2]}";
+$solverName = "AdventOfCode2016\\Day{$matches[1]}Task{$matches[2]}Solver";
 
 if ( ! class_exists($solverName)) {
 	throw new Exception("Solver \"{$solverName}\" does not exist.");
 }
 
-$solver = new $solverName();
+$solver = new $solverName($argv);
 
 return $solver;

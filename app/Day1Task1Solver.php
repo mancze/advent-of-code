@@ -8,11 +8,17 @@ use Nette\Utils\Strings;
 use Tracy\Dumper;
 
 
-class Day1Task1 implements IRunnable
+class Day1Task1Solver extends BaseSolver
 {
 
 	public function run() {
-		$instructions = file_get_contents("php://stdin");
+		$args = $this->args;
+
+		if (! $args) {
+			$args[] = "php://stdin";
+		}
+
+		$instructions = file_get_contents(array_pop($args));
 		$ride = new TaxicabRide();
 		$ride->drive($instructions);
 
@@ -60,8 +66,8 @@ class TaxicabRide
 	/** @var int Current rotation. Rotations are added so to get direction use modulo. */
 	private $rotation = 0;
 
-	/** @var int[] Clicks in given direction */
-	private $clicks = [0, 0, 0, 0];
+	/** @var int[] Current location */
+	private $location = [0, 0];
 
 
 	/**
@@ -89,11 +95,28 @@ class TaxicabRide
 			[$rotation, $clicks] = $step;
 
 			$this->rotation += ($rotation == self::RIGHT ? 1 : -1);
-			$this->clicks[$this->getDirection()] += $clicks;
+
+			$direction = $this->getDirection();
+
+			if ($direction == Direction::NORTH) {
+				$this->location[0] += $clicks;
+			}
+			elseif ($direction == Direction::SOUTH) {
+				$this->location[0] -= $clicks;
+			}
+			elseif ($direction == Direction::EAST) {
+				$this->location[1] += $clicks;
+			}
+			elseif ($direction == Direction::WEST) {
+				$this->location[1] -= $clicks;
+			}
+			else {
+				throw new Exception("Invalid direction.");
+			}
 		}
 
-		echo "Final clicks are:" . PHP_EOL;
-		Dumper::dump($this->clicks);
+		echo "Final location is:" . PHP_EOL;
+		Dumper::dump($this->location);
 	}
 
 
@@ -151,8 +174,7 @@ class TaxicabRide
 	 * @return int
 	 */
 	public function getDistance(): int {
-		return abs($this->clicks[Direction::NORTH] - $this->clicks[Direction::SOUTH]) +
-			abs($this->clicks[Direction::EAST] - $this->clicks[Direction::WEST]);
+		return abs($this->location[0]) + abs($this->location[1]);
 	}
 
 }
